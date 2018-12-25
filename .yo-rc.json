@@ -17,7 +17,6 @@
     "devDatabaseType": "h2Memory",
     "prodDatabaseType": "mysql",
     "searchEngine": "elasticsearch",
-    "messageBroker": "kafka",
     "serviceDiscoveryType": "eureka",
     "buildTool": "gradle",
     "enableSwaggerCodegen": true,
@@ -36,6 +35,7 @@
     ],
     "skipClient": true,
     "skipUserManagement": true,
-    "enableHibernateCache": false
+    "enableHibernateCache": false,
+    "messageBroker": false
   }
 }
