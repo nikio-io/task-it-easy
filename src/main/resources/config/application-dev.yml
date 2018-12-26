@@ -93,11 +93,6 @@ server:
 jhipster:
     http:
         version: V_1_1 # To use HTTP/2 you will need to activate TLS (see application-tls.yml)
-    cache: # Cache configuration
-        memcached: # Memcached configuration
-            # Disabled by default in dev mode as Memcached does not work with Spring Boot Devtools
-            # If you want to use Memcached, you must also enable it in CacheConfiguration
-            enabled: false
     # CORS is disabled by default on microservices, as you should access them through a gateway.
     # If you want to enable it, please uncomment the configuration below.
     # cors:

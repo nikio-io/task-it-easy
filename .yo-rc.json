@@ -11,7 +11,6 @@
     "packageFolder": "io/nikio/tie",
     "serverPort": "8081",
     "authenticationType": "oauth2",
-    "cacheProvider": "memcached",
     "websocket": false,
     "databaseType": "sql",
     "devDatabaseType": "h2Memory",
@@ -47,6 +46,7 @@
     "dockerLoadCommand": "sudo docker load",
     "openshiftNamespace": "tie-stage",
     "storageType": "persistent",
-    "registryReplicas": 2
+    "registryReplicas": 2,
+    "cacheProvider": "no"
   }
 }
