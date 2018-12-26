@@ -36,6 +36,17 @@
     "skipUserManagement": true,
     "enableHibernateCache": false,
     "messageBroker": false,
-    "serviceDiscoveryType": false
+    "serviceDiscoveryType": false,
+    "appsFolders": [
+      "task-it-easy"
+    ],
+    "directoryPath": "../",
+    "monitoring": "no",
+    "dockerRepositoryName": "registry.cloud.nikio.io",
+    "dockerPushCommand": "sudo docker push",
+    "dockerLoadCommand": "sudo docker load",
+    "openshiftNamespace": "tie-stage",
+    "storageType": "persistent",
+    "registryReplicas": 2
   }
 }
