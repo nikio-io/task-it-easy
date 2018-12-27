@@ -1,0 +1,36 @@
+{
+    "name": "Item",
+    "fields": [
+        {
+            "fieldName": "type",
+            "fieldType": "Type",
+            "fieldValues": "TASK,REMINDER,BIRTHDAY"
+        },
+        {
+            "fieldName": "title",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "description",
+            "fieldType": "String"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "board",
+            "otherEntityName": "board",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20181227001735",
+    "entityTableName": "item",
+    "dto": "no",
+    "pagination": "no",
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "tie",
+    "applications": "*",
+    "microserviceName": "tie"
+}
