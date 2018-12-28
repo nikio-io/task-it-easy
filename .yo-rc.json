@@ -1,0 +1,35 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "io.nikio.tie",
+      "nativeLanguage": "en"
+    },
+    "jhipsterVersion": "5.7.2",
+    "applicationType": "monolith",
+    "baseName": "tie",
+    "packageName": "io.nikio.tie",
+    "packageFolder": "io/nikio/tie",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "cacheProvider": "no",
+    "websocket": "spring-websocket",
+    "databaseType": "sql",
+    "devDatabaseType": "h2Disk",
+    "prodDatabaseType": "mysql",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
+    "buildTool": "gradle",
+    "enableSwaggerCodegen": true,
+    "jwtSecretKey": "OGY2ZDUxNDdlNmNjYmE0ZDQ5YTBmYTRmZjJhNTkxZWUxM2FmNzIwNzE0ZTA0Zjc3MDE0NGJiMjFmZjk2YjU5MWY1ZGEyZTA3ZmE4ODhjMzM4MDU0YTM2ODM2Yjk5ZWE4YjlkZGI2OTU5M2NiYWUwNjgzOWRiN2IxMTUyMDE3YzM=",
+    "clientFramework": "react",
+    "useSass": true,
+    "clientPackageManager": "npm",
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "otherModules": [],
+    "enableTranslation": true,
+    "nativeLanguage": "en",
+    "languages": ["en", "de"]
+  }
+}
