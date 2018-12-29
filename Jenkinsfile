@@ -4,6 +4,7 @@ pipeline {
     }
     stages {
         stage('checkout') {
+
             checkout scm
         }
         stage('clean') {
