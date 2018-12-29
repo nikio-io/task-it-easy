@@ -22,24 +22,28 @@ pipeline {
 
         stage('backend tests') {
             steps {
-                try {
-                    sh "./gradlew test -PnodeInstall --no-daemon"
-                } catch (err) {
-                    throw err
-                } finally {
-                    junit '**/build/**/TEST-*.xml'
+                script {
+                    try {
+                        sh "./gradlew test -PnodeInstall --no-daemon"
+                    } catch (err) {
+                        throw err
+                    } finally {
+                        junit '**/build/**/TEST-*.xml'
+                    }
                 }
             }
         }
 
         stage('frontend tests') {
             steps {
-                try {
-                    sh "./gradlew npm_run_test-ci -PnodeInstall --no-daemon"
-                } catch (err) {
-                    throw err
-                } finally {
-                    junit '**/build/test-results/jest/TESTS-*.xml'
+                script {
+                    try {
+                        sh "./gradlew npm_run_test-ci -PnodeInstall --no-daemon"
+                    } catch (err) {
+                        throw err
+                    } finally {
+                        junit '**/build/test-results/jest/TESTS-*.xml'
+                    }
                 }
             }
         }
