@@ -30,6 +30,14 @@
     "otherModules": [],
     "enableTranslation": true,
     "nativeLanguage": "en",
-    "languages": ["en", "de"]
+    "languages": ["en", "de"],
+    "appsFolders": ["task-it-easy"],
+    "directoryPath": "../",
+    "monitoring": "no",
+    "dockerRepositoryName": "registry.cloud.nikio.io/tie",
+    "dockerPushCommand": "docker push",
+    "openshiftNamespace": "tie",
+    "storageType": "persistent",
+    "registryReplicas": 2
   }
 }
