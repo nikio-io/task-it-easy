@@ -1,0 +1,10 @@
+{
+  "tieApp": {
+    "Type": {
+      "null": "",
+      "TASK": "TASK",
+      "REMINDER": "REMINDER",
+      "BIRTHDAY": "BIRTHDAY"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "tieApp": {
+    "board": {
+      "home": {
+        "title": "Boards",
+        "createLabel": "Board erstellen",
+        "createOrEditLabel": "Board erstellen oder bearbeiten"
+      },
+      "created": "Board erstellt mit ID {{ param }}",
+      "updated": "Board aktualisiert mit ID {{ param }}",
+      "deleted": "Board gelöscht mit ID {{ param }}",
+      "delete": {
+        "question": "Soll Board {{ id }} wirklich dauerhaft gelöscht werden?"
+      },
+      "detail": {
+        "title": "Board"
+      },
+      "title": "Title",
+      "description": "Description",
+      "item": "Item"
+    }
+  }
+}
