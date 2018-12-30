@@ -54,5 +54,42 @@ pipeline {
                 archiveArtifacts artifacts: '**/build/libs/*.war', fingerprint: true
             }
         }
+
+        stage('Create Image Builder') {
+            when {
+                expression {
+                    openshift.withCluster() {
+                        openshift.withProject("tie-dev") {
+                            return !openshift.selector("bc", "tie").exists();
+                        }
+                    }
+                }
+            }
+            steps {
+                script {
+                    openshift.withCluster() {
+                        openshift.withProject("tie-dev") {
+                            openshift.newBuild("--name=tie", "--strategy docker", "--binary=true", "-docker-image centos:centos7")
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Build Image') {
+            steps {
+                sh "rm -rf oc-build && mkdir -p oc-build"
+                sh "cp src/main/docker/Dockerfile src/main/docker/entrypoint.sh  oc-build/"
+                sh "cp build/libs/*-SNAPSHOT.war oc-build/app.war"
+                script {
+                    openshift.withCluster() {
+                        openshift.withProject("tie-dev") {
+                            openshift.selector("bc", "tie").startBuild("--from-dir=oc-build/", "--wait=true", "--follow")
+                        }
+                    }
+                }
+            }
+        }
+
     }
 }
