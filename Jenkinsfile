@@ -54,7 +54,7 @@ pipeline {
         stage('packaging') {
             steps {
                 sh "gradle bootWar -x test -Pprod -PnodeInstall --no-daemon"
-                archiveArtifacts artifacts: '**/build/libs/*.war', fingerprint: true
+             //   archiveArtifacts artifacts: '**/build/libs/*.war', fingerprint: true
             }
         }
 
