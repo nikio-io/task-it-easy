@@ -10,13 +10,13 @@ pipeline {
         }
         stage('clean') {
             steps {
-                sh "chmod +x gradlew"
-                sh "./gradlew clean --no-daemon"
+               // sh "chmod +x gradlew"
+                sh "gradle clean --no-daemon"
             }
         }
         stage('npm install') {
             steps {
-                sh "./gradlew npm_install -PnodeInstall --no-daemon"
+                sh "gradle npm_install -PnodeInstall --no-daemon"
             }
         }
 
@@ -24,7 +24,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        sh "./gradlew test -PnodeInstall --no-daemon"
+                        sh "gradle test -PnodeInstall --no-daemon"
                     } catch (err) {
                         throw err
                     } finally {
@@ -38,7 +38,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        sh "./gradlew npm_run_test-ci -PnodeInstall --no-daemon"
+                        sh "gradle npm_run_test-ci -PnodeInstall --no-daemon"
                     } catch (err) {
                         throw err
                     } finally {
@@ -50,7 +50,7 @@ pipeline {
 
         stage('packaging') {
             steps {
-                sh "./gradlew bootWar -x test -Pprod -PnodeInstall --no-daemon"
+                sh "gradle bootWar -x test -Pprod -PnodeInstall --no-daemon"
                 archiveArtifacts artifacts: '**/build/libs/*.war', fingerprint: true
             }
         }
