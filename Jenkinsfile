@@ -72,7 +72,7 @@ pipeline {
                 script {
                     openshift.withCluster() {
                         openshift.withProject("tie-dev") {
-                            openshift.newBuild("--name=tie", "--strategy docker", "--binary=true", "--docker-image centos:centos7")
+                            openshift.newBuild("--name=tie", "--strategy docker", "--binary=true", "--docker-image openjdk:8-jre-alpine")
                         }
                     }
                 }
