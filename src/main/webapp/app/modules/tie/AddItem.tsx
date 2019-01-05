@@ -26,6 +26,7 @@ export class AddItem extends React.Component<IAddTaskProp, IAddTaskState> {
   addItem = () => {
     this.state.task.type = this.props.type;
     this.props.createEntity(this.state.task);
+    this.state.task.title = '';
   };
 
   updateValue = e => {
@@ -37,7 +38,7 @@ export class AddItem extends React.Component<IAddTaskProp, IAddTaskState> {
       <Row>
         <Col md="9">
           <form onSubmit={this.addItem}>
-            <input type="text" placeholder={'Taskname'} onChange={this.updateValue} />
+            <input type="text" placeholder={'Taskname'} value={this.state.task.title} onChange={this.updateValue} />
             <button type="submit">Add {this.props.type.toString()}!</button>
           </form>
         </Col>
