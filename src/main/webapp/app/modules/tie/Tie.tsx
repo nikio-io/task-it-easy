@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { Row, Col, Alert } from 'reactstrap';
 
 import Tasks from './Tasks';
+import AddTask from './AddTask';
+
 import { getEntities } from 'app/entities/item/item.reducer';
 
 export interface ITieProp extends StateProps, DispatchProps {}
@@ -20,8 +22,9 @@ export class Tie extends React.Component<ITieProp> {
           <h2>Welcome to TIE!</h2>
 
           <h3>Tasks</h3>
-
           <Tasks tasks={this.props.itemList} />
+
+          <AddTask />
         </Col>
       </Row>
     );
