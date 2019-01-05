@@ -19,6 +19,37 @@ pipeline {
                 sh "gradle npm_install -PnodeInstall --no-daemon"
             }
         }
+        stage('Run Tests') {
+            parallel {
+                stage('backend tests') {
+                    steps {
+                        script {
+                            try {
+                                sh "gradle test -PnodeInstall --no-daemon"
+                            } catch (err) {
+                                throw err
+                            } finally {
+                                junit '**/build/**/TEST-*.xml'
+                            }
+                        }
+                    }
+                }
+
+                stage('frontend tests') {
+                    steps {
+                        script {
+                            try {
+                                sh "gradle npm_run_test-ci -PnodeInstall --no-daemon"
+                            } catch (err) {
+                                throw err
+                            } finally {
+                                junit '**/build/test-results/jest/TESTS-*.xml'
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         stage('packaging') {
             steps {
