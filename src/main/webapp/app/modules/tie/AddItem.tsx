@@ -19,12 +19,7 @@ export class AddItem extends React.Component<IAddTaskProp, IAddTaskState> {
     super(props);
 
     this.state = {
-      task: new class implements IItem {
-        description: string;
-        id: number;
-        title: string;
-        type: Type;
-      }()
+      task: {} as IItem
     };
   }
 
@@ -33,12 +28,16 @@ export class AddItem extends React.Component<IAddTaskProp, IAddTaskState> {
     this.props.createEntity(this.state.task);
   };
 
+  updateValue = e => {
+    this.state.task.title = e.target.value;
+  };
+
   render() {
     return (
       <Row>
         <Col md="9">
           <form onSubmit={this.addItem}>
-            <input type="text" placeholder={'Taskname'} onChange={e => (this.state.task.title = e.target.value)} />
+            <input type="text" placeholder={'Taskname'} onChange={this.updateValue} />
             <button type="submit">Add {this.props.type.toString()}!</button>
           </form>
         </Col>
