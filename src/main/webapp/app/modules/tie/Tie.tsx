@@ -3,10 +3,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Row, Col, Alert } from 'reactstrap';
 
-import Tasks from './Tasks';
-import AddTask from './AddTask';
+import ShowItems from './ShowItems';
+import AddItem from './AddItem';
 
 import { getEntities } from 'app/entities/item/item.reducer';
+import { Type } from 'app/shared/model/item.model';
 
 export interface ITieProp extends StateProps, DispatchProps {}
 
@@ -20,11 +21,25 @@ export class Tie extends React.Component<ITieProp> {
       <Row>
         <Col md="9">
           <h2>Welcome to TIE!</h2>
+          <h3>Have a look at your Boards</h3>
 
-          <h3>Tasks</h3>
-          <Tasks tasks={this.props.itemList} />
-
-          <AddTask />
+          <Row>
+            <Col>
+              <h3>Tasks</h3>
+              <ShowItems items={this.props.itemList.filter(i => i.type === Type.TASK)} />
+              <AddItem type={Type.TASK} />
+            </Col>
+            <Col>
+              <h3>Reminder</h3>
+              <ShowItems items={this.props.itemList.filter(i => i.type === Type.REMINDER)} />
+              <AddItem type={Type.REMINDER} />
+            </Col>
+            <Col>
+              <h3>Birthdays?</h3>
+              <ShowItems items={this.props.itemList.filter(i => i.type === Type.BIRTHDAY)} />
+              <AddItem type={Type.BIRTHDAY} />
+            </Col>
+          </Row>
         </Col>
       </Row>
     );

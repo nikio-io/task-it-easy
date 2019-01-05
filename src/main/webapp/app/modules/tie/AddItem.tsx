@@ -6,12 +6,15 @@ import { IItem, Type } from 'app/shared/model/item.model';
 import { IRootState } from 'app/shared/reducers';
 import { createEntity } from 'app/entities/item/item.reducer';
 
-export interface IAddTaskProp extends StateProps, DispatchProps {}
+export interface IAddTaskProp extends StateProps, DispatchProps {
+  type: Type;
+}
+
 export interface IAddTaskState {
   task: IItem;
 }
 
-export class AddTask extends React.Component<IAddTaskProp, IAddTaskState> {
+export class AddItem extends React.Component<IAddTaskProp, IAddTaskState> {
   constructor(props) {
     super(props);
 
@@ -25,9 +28,8 @@ export class AddTask extends React.Component<IAddTaskProp, IAddTaskState> {
     };
   }
 
-  addTask = () => {
-    this.state.task.type = Type.TASK;
-
+  addItem = () => {
+    this.state.task.type = this.props.type;
     this.props.createEntity(this.state.task);
   };
 
@@ -35,9 +37,9 @@ export class AddTask extends React.Component<IAddTaskProp, IAddTaskState> {
     return (
       <Row>
         <Col md="9">
-          <form onSubmit={this.addTask}>
+          <form onSubmit={this.addItem}>
             <input type="text" placeholder={'Taskname'} onChange={e => (this.state.task.title = e.target.value)} />
-            <button type="submit">Add Task!</button>
+            <button type="submit">Add {this.props.type.toString()}!</button>
           </form>
         </Col>
       </Row>
@@ -60,4 +62,4 @@ type DispatchProps = typeof mapDispatchToProps;
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(AddTask);
+)(AddItem);

@@ -33,7 +33,7 @@ public class AsyncConfiguration implements AsyncConfigurer, SchedulingConfigurer
     @Override
     @Bean(name = "taskExecutor")
     public Executor getAsyncExecutor() {
-        log.debug("Creating Async Tasks Executor");
+        log.debug("Creating Async ShowItems Executor");
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(jHipsterProperties.getAsync().getCorePoolSize());
         executor.setMaxPoolSize(jHipsterProperties.getAsync().getMaxPoolSize());
