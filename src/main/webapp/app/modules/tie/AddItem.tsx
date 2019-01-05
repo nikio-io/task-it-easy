@@ -18,8 +18,10 @@ export class AddItem extends React.Component<IAddTaskProp, IAddTaskState> {
   constructor(props) {
     super(props);
 
+    let task: IItem = {};
+
     this.state = {
-      task: {} as IItem
+      task: task
     };
   }
 
