@@ -6,35 +6,35 @@ apiVersion: v1
 kind: Template
 metadata:
   name: scc-config-template
-  namespace: tie-dev
   annotations:
     description: This template defines the scc objects
     tags: "scc"
     openshift.io/display-name: scc-config-template
     openshift.io/long-description: "This template provides the scc objects"
-    openshift.io/provider-display-name: JHipster-OpenShift
+    openshift.io/provider-display-name: nikio.io
 labels:
   app: scc-config-template
-  createdBy: JHipster-Team
+  createdBy: nikio.io
 parameters:
-  -
-    name: SVC_ID
-    value: jhipster
+  - name: SVC_ID
+    value: nikio
     description: Name of the service account
     required: true
     readOnly: true
-    displayName: "*** PLEASE DO NOT CHANGE THIS ***"
+    displayName: "Service account with permissions to run pods"
+  - name: NAMESPACE
+    value: tie-dev
+    description: Namespace to apply scc config
+    required: true
 objects:
-  -
-    apiVersion: v1
+  - apiVersion: v1
     kind: ServiceAccount
     metadata:
       name: ${SVC_ID}
-  -
-    apiVersion: v1
+  - apiVersion: v1
     kind: SecurityContextConstraints
     metadata:
-      name: jhipster-scc
+      name: nikio-scc
       annotations:
         kubernetes.io/description: "This provides all features of the restricted SCC but allows users to run with any UID and any GID.
          This mostly inherits anyuid scc."
@@ -47,7 +47,7 @@ objects:
     supplementalGroups:
       type: RunAsAny
     users:
-    - system:serviceaccount:tie-dev:${SVC_ID}
+    - system:serviceaccount:${NAMESPACE}:${SVC_ID}
     volumes:
     - configMap
     - downwardAPI
