@@ -1,5 +1,5 @@
 def version = "latest"
-def appName = $ { env.APP_NAME }
+def appName = env.APP_NAME
 pipeline {
     agent {
         label 'gradle'
