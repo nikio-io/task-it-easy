@@ -99,6 +99,9 @@ pipeline {
             steps {
                 script {
                     openshift.withCluster() {
+                        if(!openshift.selector("project", env.STAGE_PROJECT).exists()) {
+                            openshift.newProject(env.STAGE_PROJECT)
+                        }
                         openshift.withProject(env.STAGE_PROJECT) {
                             if (!openshift.selector('dc', appName + "-mysqldb").exists()) {
                                 def db = openshift.process("-f", "src/main/docker/openshift/tie-mysql.yml", "-p", "DB_APP_NAME=${appName}-mysqldb", "-p", "DATABASE_NAME=${appName}")
