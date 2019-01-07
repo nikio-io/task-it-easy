@@ -22,7 +22,7 @@ parameters:
     required: true
     displayName: Application Port
   - name: DOCKER_IMAGE
-    value: "registry.cloud.nikio.io/tie-dev/tie"
+    value: "docker-registry.default.svc:5000/tie-dev/tie"
     description: URL to the docker registry to the application image 
     required: true
     displayName: Docker registry URL
@@ -79,7 +79,7 @@ objects:
         spec:
           containers:
           - name: ${APP_NAME}
-            image: ${DOCKER_IMAGE}
+            imageStreamTag: ${DOCKER_IMAGE}
             imagePullPolicy: IfNotPresent
             env:
             - name: SPRING_PROFILES_ACTIVE

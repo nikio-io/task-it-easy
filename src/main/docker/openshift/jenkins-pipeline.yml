@@ -1,0 +1,33 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftNewBuild
+  labels:
+    build: task-it-easy
+  name: task-it-easy
+  namespace: tie-cicd
+spec:
+  failedBuildsHistoryLimit: 5
+  nodeSelector: {}
+  output: {}
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    git:
+      ref: master
+      uri: 'https://github.com/nikio-io/task-it-easy.git'
+    type: Git
+  strategy:
+    jenkinsPipelineStrategy:
+      env:
+        - name: APP_NAME
+          value: tie
+        - name: DEV_PROJECT
+          value: tie-dev
+        - name: STAGE_PROJECT
+          value: tie-stage
+      jenkinsfilePath: Jenkinsfile
+    type: JenkinsPipeline
+  successfulBuildsHistoryLimit: 5

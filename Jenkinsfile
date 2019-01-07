@@ -1,5 +1,9 @@
 def version = "latest"
 def appName = env.APP_NAME
+def devProject = devProject
+def stageProject = stageProject
+def dockerRegistry = env.DOCKER_REGISTRY
+
 pipeline {
     agent {
         label 'gradle'
@@ -59,11 +63,28 @@ pipeline {
             }
         }
 
+        stage('Create DEV/Build Project') {
+            when {
+                expression {
+                    openshift.withCluster() {
+                        return !openshift.selector("project", devProject).exists();
+                    }
+                }
+            }
+            steps {
+                script {
+                    openshift.withCluster() {
+                        openshift.newProject(devProject);
+                    }
+                }
+            }
+        }
+
         stage('Create Image Builder') {
             when {
                 expression {
                     openshift.withCluster() {
-                        openshift.withProject(env.DEV_PROJECT) {
+                        openshift.withProject(devProject) {
                             return !openshift.selector("bc", appName).exists();
                         }
                     }
@@ -72,7 +93,7 @@ pipeline {
             steps {
                 script {
                     openshift.withCluster() {
-                        openshift.withProject(env.DEV_PROJECT) {
+                        openshift.withProject(devProject) {
                             openshift.newBuild("--name=tie", "--strategy docker", "--binary=true", "--docker-image openjdk:8-jre-alpine")
                         }
                     }
@@ -87,7 +108,7 @@ pipeline {
                 sh "cp build/libs/*-SNAPSHOT.war oc-build/app.war"
                 script {
                     openshift.withCluster() {
-                        openshift.withProject(env.DEV_PROJECT) {
+                        openshift.withProject(devProject) {
                             openshift.selector("bc", appName).startBuild("--from-dir=oc-build/", "--wait=true", "--follow")
                         }
                     }
@@ -95,14 +116,11 @@ pipeline {
             }
         }
 
-        stage('Deploy STAGE') {
+        stage('Deploy DEV') {
             steps {
                 script {
                     openshift.withCluster() {
-                        if(!openshift.selector("project", env.STAGE_PROJECT).exists()) {
-                            openshift.newProject(env.STAGE_PROJECT)
-                        }
-                        openshift.withProject(env.STAGE_PROJECT) {
+                        openshift.withProject(devProject) {
                             if (!openshift.selector('dc', appName + "-mysqldb").exists()) {
                                 def db = openshift.process("-f", "src/main/docker/openshift/tie-mysql.yml", "-p", "DB_APP_NAME=${appName}-mysqldb", "-p", "DATABASE_NAME=${appName}")
                                 def dbCreate = openshift.create(db)
@@ -113,32 +131,44 @@ pipeline {
                                 openshift.selector('svc', appName).delete()
                                 openshift.selector('route', appName).delete()
                             }
-
-                            def deployment = openshift.process("-f", "src/main/docker/openshift/tie-deployment.yml", "-p", "APP_NAME=${appName}", "-p", "DOCKER_IMAGE=${env.DEV_PROJECT}/${appName}")
+                            def deployment = openshift.process("-f", "src/main/docker/openshift/tie-deployment.yml", "-p", "APP_NAME=${appName}", "-p", "DOCKER_IMAGE=${dockerRegistry}/${devProject}/${appName}:${version}")
                             def deploymentCreated = openshift.create(deployment)
                             echo "Instantiated Deployment: ${deploymentCreated.names()}"
-
-                            openshift.newApp("${appName}:${version}").narrow("svc").expose()
-                            openshift.set("probe dc/tasks --readiness --get-url=http://:8080/ --initial-delay-seconds=20 --failure-threshold=10 --period-seconds=10")
-                            openshift.set("probe dc/tasks --liveness  --get-url=http://:8080/ --initial-delay-seconds=60 --failure-threshold=10 --period-seconds=10")
                         }
                     }
                 }
             }
         }
 
-
-//        stage('Promote to STAGE?') {
-//            steps {
-//                timeout(time: 15, unit: 'MINUTES') {
-//                    input message: "Promote to STAGE?", ok: "Promote"
-//                }
-//                script {
-//                    openshift.withCluster() {
-//                        openshift.tag("${env.DEV_PROJECT}/${appName}:latest", "${env.STAGE_PROJECT}/${appName}:${version}")
-//                    }
-//                }
-//            }
-//        }
+        stage('Promote to STAGE?') {
+            steps {
+                timeout(time:15, unit:'MINUTES') {
+                    input message: "Promote to STAGE?", ok: "Promote"
+                }
+                script {
+                    openshift.withCluster() {
+                        if(!openshift.selector("project", stageProject).exists()) {
+                            openshift.newProject(stageProject)
+                        }
+                        openshift.tag("${devProject}/${appName}:latest", "${stageProject}/${appName}:${version}")
+                        openshift.withProject(stageProject) {
+                            if (!openshift.selector('dc', appName + "-mysqldb").exists()) {
+                                def db = openshift.process("-f", "src/main/docker/openshift/tie-mysql.yml", "-p", "DB_APP_NAME=${appName}-mysqldb", "-p", "DATABASE_NAME=${appName}")
+                                def dbCreate = openshift.create(db)
+                                echo "Instantiated DB: ${dbCreate.names()}"
+                            }
+                            if (openshift.selector('dc', appName).exists()) {
+                                openshift.selector('dc', appName).delete()
+                                openshift.selector('svc', appName).delete()
+                                openshift.selector('route', appName).delete()
+                            }
+                            def deployment = openshift.process("-f", "src/main/docker/openshift/tie-deployment.yml", "-p", "APP_NAME=${appName}", "-p", "DOCKER_IMAGE=${dockerRegistry}/${stageProject}/${appName}:${version}")
+                            def deploymentCreated = openshift.create(deployment)
+                            echo "Instantiated Deployment: ${deploymentCreated.names()}"
+                        }
+                    }
+                }
+            }
+        }
     }
 }
