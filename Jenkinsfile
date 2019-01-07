@@ -10,90 +10,90 @@ pipeline {
                 checkout scm
             }
         }
-//        stage('clean') {
-//            steps {
-//                sh "gradle clean --no-daemon"
-//            }
-//        }
-//        stage('npm install') {
-//            steps {
-//                sh "gradle npm_install -PnodeInstall --no-daemon"
-//            }
-//        }
-//        stage('Run Tests') {
-//            parallel {
-//                stage('backend tests') {
-//                    steps {
-//                        script {
-//                            try {
-//                                sh "gradle test -PnodeInstall --no-daemon"
-//                            } catch (err) {
-//                                throw err
-//                            } finally {
-//                                junit '**/build/**/TEST-*.xml'
-//                            }
-//                        }
-//                    }
-//                }
-//
-//                stage('frontend tests') {
-//                    steps {
-//                        script {
-//                            try {
-//                                sh "gradle npm_run_test-ci -PnodeInstall --no-daemon"
-//                            } catch (err) {
-//                                throw err
-//                            } finally {
-//                                junit '**/build/test-results/jest/TESTS-*.xml'
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        stage('packaging') {
-//            steps {
-//                sh "gradle bootWar -x test -Pprod -PnodeInstall --no-daemon"
-//                //   archiveArtifacts artifacts: '**/build/libs/*.war', fingerprint: true
-//            }
-//        }
-//
-//        stage('Create Image Builder') {
-//            when {
-//                expression {
-//                    openshift.withCluster() {
-//                        openshift.withProject(env.DEV_PROJECT) {
-//                            return !openshift.selector("bc", appName).exists();
-//                        }
-//                    }
-//                }
-//            }
-//            steps {
-//                script {
-//                    openshift.withCluster() {
-//                        openshift.withProject(env.DEV_PROJECT) {
-//                            openshift.newBuild("--name=tie", "--strategy docker", "--binary=true", "--docker-image openjdk:8-jre-alpine")
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        stage('Build Image') {
-//            steps {
-//                sh "rm -rf oc-build && mkdir -p oc-build"
-//                sh "cp src/main/docker/Dockerfile src/main/docker/entrypoint.sh  oc-build/"
-//                sh "cp build/libs/*-SNAPSHOT.war oc-build/app.war"
-//                script {
-//                    openshift.withCluster() {
-//                        openshift.withProject(env.DEV_PROJECT) {
-//                            openshift.selector("bc", appName).startBuild("--from-dir=oc-build/", "--wait=true", "--follow")
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        stage('clean') {
+            steps {
+                sh "gradle clean --no-daemon"
+            }
+        }
+        stage('npm install') {
+            steps {
+                sh "gradle npm_install -PnodeInstall --no-daemon"
+            }
+        }
+        stage('Run Tests') {
+            parallel {
+                stage('backend tests') {
+                    steps {
+                        script {
+                            try {
+                                sh "gradle test -PnodeInstall --no-daemon"
+                            } catch (err) {
+                                throw err
+                            } finally {
+                                junit '**/build/**/TEST-*.xml'
+                            }
+                        }
+                    }
+                }
+
+                stage('frontend tests') {
+                    steps {
+                        script {
+                            try {
+                                sh "gradle npm_run_test-ci -PnodeInstall --no-daemon"
+                            } catch (err) {
+                                throw err
+                            } finally {
+                                junit '**/build/test-results/jest/TESTS-*.xml'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('packaging') {
+            steps {
+                sh "gradle bootWar -x test -Pprod -PnodeInstall --no-daemon"
+                //   archiveArtifacts artifacts: '**/build/libs/*.war', fingerprint: true
+            }
+        }
+
+        stage('Create Image Builder') {
+            when {
+                expression {
+                    openshift.withCluster() {
+                        openshift.withProject(env.DEV_PROJECT) {
+                            return !openshift.selector("bc", appName).exists();
+                        }
+                    }
+                }
+            }
+            steps {
+                script {
+                    openshift.withCluster() {
+                        openshift.withProject(env.DEV_PROJECT) {
+                            openshift.newBuild("--name=tie", "--strategy docker", "--binary=true", "--docker-image openjdk:8-jre-alpine")
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Build Image') {
+            steps {
+                sh "rm -rf oc-build && mkdir -p oc-build"
+                sh "cp src/main/docker/Dockerfile src/main/docker/entrypoint.sh  oc-build/"
+                sh "cp build/libs/*-SNAPSHOT.war oc-build/app.war"
+                script {
+                    openshift.withCluster() {
+                        openshift.withProject(env.DEV_PROJECT) {
+                            openshift.selector("bc", appName).startBuild("--from-dir=oc-build/", "--wait=true", "--follow")
+                        }
+                    }
+                }
+            }
+        }
 
         stage('Deploy STAGE') {
             steps {
@@ -128,17 +128,17 @@ pipeline {
         }
 
 
-        stage('Promote to STAGE?') {
-            steps {
-                timeout(time: 15, unit: 'MINUTES') {
-                    input message: "Promote to STAGE?", ok: "Promote"
-                }
-                script {
-                    openshift.withCluster() {
-                        openshift.tag("${env.DEV_PROJECT}/${appName}:latest", "${env.STAGE_PROJECT}/${appName}:${version}")
-                    }
-                }
-            }
-        }
+//        stage('Promote to STAGE?') {
+//            steps {
+//                timeout(time: 15, unit: 'MINUTES') {
+//                    input message: "Promote to STAGE?", ok: "Promote"
+//                }
+//                script {
+//                    openshift.withCluster() {
+//                        openshift.tag("${env.DEV_PROJECT}/${appName}:latest", "${env.STAGE_PROJECT}/${appName}:${version}")
+//                    }
+//                }
+//            }
+//        }
     }
 }
