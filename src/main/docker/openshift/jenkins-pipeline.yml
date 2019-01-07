@@ -24,6 +24,8 @@ spec:
       env:
         - name: APP_NAME
           value: tie
+        - name: DOCKER_REGISTRY
+          value: 'docker-registry.default.svc:5000'
         - name: DEV_PROJECT
           value: tie-dev
         - name: STAGE_PROJECT

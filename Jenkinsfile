@@ -1,7 +1,7 @@
 def version = "latest"
 def appName = env.APP_NAME
-def devProject = devProject
-def stageProject = stageProject
+def devProject = env.DEV_PROJECT
+def stageProject = env.STAGE_PROJECT
 def dockerRegistry = env.DOCKER_REGISTRY
 
 pipeline {
