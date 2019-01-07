@@ -114,7 +114,7 @@ pipeline {
                                 openshift.selector('route', appName).delete()
                             }
 
-                            def deployment = openshift.process("-f", "src/main/docker/openshift/tie-deployment.yml", "-p", "APP_NAME=${appName}", "-p", "DOCKER_IMAGE=DOCKER_IMAGE=${env.DEV_PROJECT}/${appName}")
+                            def deployment = openshift.process("-f", "src/main/docker/openshift/tie-deployment.yml", "-p", "APP_NAME=${appName}", "-p", "DOCKER_IMAGE=${env.DEV_PROJECT}/${appName}")
                             def deploymentCreated = openshift.create(deployment)
                             echo "Instantiated Deployment: ${deploymentCreated.names()}"
 
