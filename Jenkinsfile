@@ -19,14 +19,22 @@ pipeline {
                 sh "gradle clean --no-daemon"
             }
         }
-        stage('npm install') {
+        stage('Determine project version') {
+            steps {   
+                script {
+                    version = sh returnStdout: true, script: 'gradle properties -q | grep "^version:" | awk \'{print $2}\' | tr -d \'[:space:]\''
+                    echo "Current project version is ${version}"
+                }
+            }
+        }
+        stage('NPM Install') {
             steps {
                 sh "gradle npm_install -PnodeInstall --no-daemon"
             }
         }
         stage('Run Tests') {
             parallel {
-                stage('backend tests') {
+                stage('Backend tests') {
                     steps {
                         script {
                             try {
@@ -40,7 +48,7 @@ pipeline {
                     }
                 }
 
-                stage('frontend tests') {
+                stage('Frontend tests') {
                     steps {
                         script {
                             try {
@@ -56,7 +64,7 @@ pipeline {
             }
         }
 
-        stage('packaging') {
+        stage('Packaging') {
             steps {
                 sh "gradle bootWar -x test -Pprod -PnodeInstall --no-daemon"
                 //   archiveArtifacts artifacts: '**/build/libs/*.war', fingerprint: true
@@ -110,6 +118,7 @@ pipeline {
                     openshift.withCluster() {
                         openshift.withProject(devProject) {
                             openshift.selector("bc", appName).startBuild("--from-dir=oc-build/", "--wait=true", "--follow")
+                            openshift.tag("${devProject}/${appName}:latest", "${stageProject}/${appName}:${version}")
                         }
                     }
                 }
