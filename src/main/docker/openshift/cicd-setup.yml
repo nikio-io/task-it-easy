@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: tie-cicd-setup
+spec:
+  activeDeadlineSeconds: 400
+  completions: 1
+  parallelism: 1
+  template:
+    spec:
+      containers:
+        command:
+        - /bin/bash
+        - -x
+        - -c
+        - |         
+          # adjust jenkins
+          DIR="."
+          oc create -f $DIR/jenkins-slave-setup.yml
+          oc new-app jenkins-ephemeral
+          oc set resources dc/jenkins --limits=cpu=2,memory=2Gi --requests=cpu=100m,memory=512Mi 
+          oc label dc jenkins app=jenkins --overwrite
+          oc create -f $DIR/jenkins-pipeline.yml
+        image: openshift/origin:v3.11
+        name: tie-cicd-setup-job
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      restartPolicy: Never

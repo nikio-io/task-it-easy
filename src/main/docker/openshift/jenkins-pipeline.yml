@@ -1,12 +1,9 @@
 apiVersion: build.openshift.io/v1
 kind: BuildConfig
 metadata:
-  annotations:
-    openshift.io/generated-by: OpenShiftNewBuild
   labels:
     build: task-it-easy
   name: task-it-easy
-  namespace: tie-cicd
 spec:
   failedBuildsHistoryLimit: 5
   nodeSelector: {}
