@@ -118,7 +118,7 @@ pipeline {
                     openshift.withCluster() {
                         openshift.withProject(devProject) {
                             openshift.selector("bc", appName).startBuild("--from-dir=oc-build/", "--wait=true", "--follow")
-                            openshift.tag("${devProject}/${appName}:latest", "${stageProject}/${appName}:${version}")
+                            openshift.tag("${devProject}/${appName}:latest", "${devProject}/${appName}:${version}")
                         }
                     }
                 }
