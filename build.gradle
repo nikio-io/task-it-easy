@@ -270,6 +270,11 @@ if (project.hasProperty('nodeInstall')) {
     }
 }
 
+release {
+  failOnUnversionedFiles = false
+  failOnCommitNeeded = false
+}
+
 bootWar.dependsOn war
 compileJava.dependsOn processResources
 processResources.dependsOn cleanResources,bootBuildInfo
